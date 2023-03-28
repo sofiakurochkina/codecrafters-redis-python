@@ -18,7 +18,7 @@ def main():
     # Next, we read data from the connection. 
     # For this stage, we know that the tester only sends us PING, so we don't have to parse the incoming data.
     
-    client_connection.recv(1024)  # wait for client to send data
+    #client_connection.recv(1024)  # wait for client to send data
 
     # Once we've read data, we need to respond back with PONG.
 
@@ -28,15 +28,16 @@ def main():
 
     # The ideal approach is to create a RESP encoder function — but for now, since we know that our response will always be PONG, we can hardcode the response. 
 
-    client_connection.send(b"+PONG\r\n")
+    #client_connection.send(b"+PONG\r\n")
 
     # The PING command is the simplest of all Redis commands. It always returns PONG as a response
     # This command is often used to test if a connection is still alive, or to measure latency.
 
-    
+    # As an improvement, we'll now monitor for more incoming requests — and each time we get one, we'll respond back with PONG, and go back to waiting for the next one.
 
-
-
+    while True:
+        client_connection.recv(1024)  # wait for client to send data
+    client_connection.send(b"+PONG\r\n")
 
 if __name__ == "__main__":
     main()
